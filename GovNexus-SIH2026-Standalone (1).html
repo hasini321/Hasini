@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GovNexus — SIH 2026 Demo</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f5f8fc;color:#14213d}
+button,input,select{font:inherit} button{cursor:pointer}
+:root{--blue:#0c57c7;--blue2:#083d8c;--line:#dbe5f2;--muted:#62738a;--green:#17824c;--amber:#b86a00}
+.app{min-height:100vh} .top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;color:var(--blue2)} .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#38a0ff);display:grid;place-items:center;color:white;font-weight:900}
+.top .spacer{flex:1} .profile-chip{display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:#f4f7fb} .avatar{width:34px;height:34px;border-radius:50%;background:#dce9ff;display:grid;place-items:center;font-weight:800;color:var(--blue)}
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 72px)} .side{background:#0c2f63;color:#dbeafe;padding:20px 14px} .navbtn{width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:12px 14px;border-radius:10px;margin:4px 0} .navbtn.active,.navbtn:hover{background:#17447e;color:#fff} .demo{font-size:12px;background:#fff3cd;color:#705100;padding:9px 12px;border-radius:9px;margin:10px 0 18px}
+.main{padding:30px;max-width:1400px;width:100%;margin:auto} .hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px} h1{margin:0 0 7px;font-size:30px} h2{margin:0 0 12px} p{color:var(--muted)} .primary{border:0;background:var(--blue);color:#fff;padding:12px 18px;border-radius:10px;font-weight:700} .secondary{border:1px solid var(--line);background:#fff;color:#18324f;padding:10px 14px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px} .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(32,68,120,.05)} .kpi{font-size:28px;font-weight:800;color:var(--blue)} .badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#e8f6ee;color:var(--green)} .badge.pending{background:#fff1dc;color:var(--amber)} .badge.action{background:#ffe8e8;color:#b42318}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:24px 0 12px} .dept{min-height:220px} .dept h3{margin:12px 0 5px} .meta{font-size:13px;color:var(--muted);line-height:1.6} .dept-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)} .table th,.table td{text-align:left;padding:14px;border-bottom:1px solid var(--line);font-size:14px} .table th{background:#f7f9fc;color:#52667e}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px} .verified{color:var(--green);font-weight:700}
+.flow{display:flex;gap:10px;align-items:center;flex-wrap:wrap} .flow span{background:#eef4fb;border:1px solid var(--line);padding:12px 14px;border-radius:10px;font-weight:700}
+.modalback{display:none;position:fixed;inset:0;background:rgba(7,22,43,.55);z-index:50;padding:18px;overflow:auto} .modalback.show{display:block} .modal{max-width:1040px;margin:18px auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.25)} .modalhead{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between} .close{border:0;background:#f0f4f8;width:36px;height:36px;border-radius:10px} .steps{display:grid;grid-template-columns:repeat(6,1fr);padding:14px 22px;background:#f8fbff;border-bottom:1px solid var(--line);gap:6px} .steps div{font-size:11px;text-align:center;color:#7a8a9d} .steps .on{color:var(--blue);font-weight:700} .modalbody{padding:22px;min-height:440px} .modalfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.tools{display:flex;gap:10px;margin-bottom:16px} .tools input,.tools select{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff} .tools input{flex:1} .servicegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-height:420px;overflow:auto} .service{border:1px solid var(--line);background:#fff;border-radius:13px;padding:15px;text-align:left} .service:hover{border-color:#8eb7ef;box-shadow:0 4px 14px rgba(20,80,160,.08)} .service small{color:var(--blue);font-weight:700} .service h3{margin:7px 0 4px;font-size:16px}
+.req{display:grid;grid-template-columns:repeat(2,1fr);gap:12px} .req div{border:1px solid var(--line);border-radius:12px;padding:14px} .consentbox{background:#f7fbff;border:1px solid #cfe2ff;border-radius:14px;padding:18px} .loader{height:8px;background:#e7edf5;border-radius:999px;overflow:hidden;margin:20px 0} .loader i{display:block;height:100%;width:0;background:var(--blue);transition:width .4s} .autofill{display:grid;grid-template-columns:repeat(2,1fr);gap:12px} .field{border:1px solid var(--line);border-radius:12px;padding:12px} .field b{color:var(--green);float:right;font-size:12px} .field span{display:block;font-size:12px;color:var(--muted);margin-bottom:6px} .field input{width:100%;border:0;background:#f6f9fc;padding:10px;border-radius:8px}
+.success{text-align:center;padding:30px} .appId{display:inline-block;padding:14px 18px;background:#eef5ff;border-radius:12px;font-weight:900;font-size:20px;color:var(--blue);margin:12px}
+.login{position:fixed;inset:0;background:linear-gradient(135deg,#073a83,#0e6bd8);display:grid;place-items:center;z-index:100} .login.hidden{display:none} .loginbox{width:min(430px,92vw);background:#fff;border-radius:18px;padding:30px;box-shadow:0 25px 80px rgba(0,0,0,.25)} .loginbox input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0 14px} .notice{background:#fff8df;border:1px solid #f2df9f;padding:12px;border-radius:10px;font-size:13px;color:#745d0a}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{display:flex;overflow:auto;padding:10px;position:sticky;top:72px;z-index:15}.navbtn{width:auto;white-space:nowrap}.main{padding:18px}.grid{grid-template-columns:1fr 1fr}.hero{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.grid,.servicegrid,.autofill,.req{grid-template-columns:1fr}.steps{grid-template-columns:repeat(3,1fr)}.top{padding:0 14px}.profile-chip span{display:none}}
+</style>
+</head>
+<body>
+<div class="login" id="login">
+  <div class="loginbox">
+    <div class="brand"><div class="logo">GN</div> GovNexus</div>
+    <h2 style="margin-top:22px">Unified Citizen Login</h2>
+    <p>One login for connected government service journeys.</p>
+    <div class="notice">SIH 2026 DEMO — simulated integrations and fictional citizen data.</div>
+    <label>Unified Citizen ID</label><input value="UCID-DEMO-26-00421" readonly>
+    <label>Password</label><input type="password" value="demo1234" readonly>
+    <button class="primary" style="width:100%" onclick="login()">Login to GovNexus</button>
+  </div>
+</div>
+
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">GN</div> GovNexus</div>
+  <div class="spacer"></div>
+  <button class="secondary" style="margin-right:10px">🔔</button>
+  <div class="profile-chip"><div class="avatar">AS</div><span><b>Aarav Sharma</b><br><small>DEMO CITIZEN</small></span></div>
+</header>
+<div class="shell">
+<nav class="side">
+  <div class="demo">DEMO PROTOTYPE<br>Not connected to live government databases.</div>
+  <button class="navbtn active" data-page="dashboard">Dashboard</button>
+  <button class="navbtn" data-page="departments">Connected Departments</button>
+  <button class="navbtn" data-page="services">Service Catalogue</button>
+  <button class="navbtn" data-page="tracking">Applications</button>
+  <button class="navbtn" data-page="profile">My Verified Information</button>
+  <button class="navbtn" data-page="activity">Consent & Activity</button>
+  <button class="navbtn" data-page="architecture">Technical Architecture</button>
+</nav>
+<main class="main" id="main"></main>
+</div>
+</div>
+
+<div class="modalback" id="modal">
+<div class="modal">
+  <div class="modalhead"><div><small style="color:#0c57c7;font-weight:800">UNIFIED SERVICE APPLICATION</small><h2 id="modalTitle">Choose a service</h2></div><button class="close" onclick="closeApply()">✕</button></div>
+  <div class="steps" id="steps"></div>
+  <div class="modalbody" id="modalBody"></div>
+  <div class="modalfoot" id="modalFoot"></div>
+</div>
+</div>
+
+<script>
+const DATA={"departments": [{"id": "uidai", "name": "UIDAI / Aadhaar", "ministry": "Identity & Citizen Services", "category": "Identity & Documents", "status": "Connected", "data": "Identity, DOB, address", "sync": "Verified 2 min ago", "services": 5}, {"id": "eci", "name": "Election Commission of India", "ministry": "Identity & Citizen Services", "category": "Identity & Documents", "status": "Available", "data": "Electoral profile", "sync": "Available for demo", "services": 4}, {"id": "passport", "name": "Passport Seva", "ministry": "Ministry of External Affairs", "category": "Passport & Travel", "status": "Connected", "data": "Passport profile", "sync": "Verified today", "services": 4}, {"id": "itax", "name": "Income Tax Department", "ministry": "Ministry of Finance", "category": "Finance & Tax", "status": "Connected", "data": "PAN, tax profile", "sync": "Verified 8 min ago", "services": 6}, {"id": "epfo", "name": "EPFO", "ministry": "Ministry of Labour & Employment", "category": "Employment", "status": "Connected", "data": "UAN, employment", "sync": "Verified 11 min ago", "services": 5}, {"id": "esic", "name": "ESIC", "ministry": "Ministry of Labour & Employment", "category": "Employment", "status": "Available", "data": "Insured-person status", "sync": "Available for demo", "services": 4}, {"id": "health", "name": "National Health Authority", "ministry": "Ministry of Health & Family Welfare", "category": "Health", "status": "Connected", "data": "Digital health eligibility", "sync": "Verified today", "services": 4}, {"id": "education", "name": "Education & Scholarship Services", "ministry": "Ministry of Education", "category": "Education", "status": "Connected", "data": "Academic records", "sync": "Verified 5 min ago", "services": 6}, {"id": "transport", "name": "Parivahan", "ministry": "Ministry of Road Transport & Highways", "category": "Transport", "status": "Connected", "data": "DL / vehicle records", "sync": "Verified today", "services": 7}, {"id": "social", "name": "Social Welfare Services", "ministry": "Ministry of Social Justice & Empowerment", "category": "Social Welfare", "status": "Available", "data": "Eligibility attributes", "sync": "Available for demo", "services": 5}, {"id": "wcd", "name": "Women & Child Services", "ministry": "Ministry of Women & Child Development", "category": "Social Welfare", "status": "Action Required", "data": "Profile-based eligibility", "sync": "Consent needed", "services": 4}, {"id": "housing", "name": "Urban Housing Services", "ministry": "Ministry of Housing & Urban Affairs", "category": "Housing", "status": "Available", "data": "Household / eligibility", "sync": "Available for demo", "services": 4}, {"id": "rural", "name": "Rural Development Services", "ministry": "Ministry of Rural Development", "category": "Rural Development", "status": "Available", "data": "Household / work records", "sync": "Available for demo", "services": 5}, {"id": "agri", "name": "Farmer Services", "ministry": "Ministry of Agriculture & Farmers Welfare", "category": "Agriculture", "status": "Available", "data": "Farmer eligibility", "sync": "Available for demo", "services": 5}, {"id": "food", "name": "Food & Public Distribution", "ministry": "Ministry of Consumer Affairs, Food & Public Distribution", "category": "Consumer Services", "status": "Available", "data": "Household entitlement", "sync": "Available for demo", "services": 4}, {"id": "rail", "name": "Railway Citizen Services", "ministry": "Ministry of Railways", "category": "Other Central Services", "status": "Integration Pending", "data": "Citizen service profile", "sync": "Adapter pending", "services": 3}, {"id": "env", "name": "Environment Citizen Services", "ministry": "Ministry of Environment, Forest and Climate Change", "category": "Other Central Services", "status": "Available", "data": "Application records", "sync": "Available for demo", "services": 3}], "services": [{"id": "aadhaar-update", "name": "Aadhaar Profile Update", "category": "Identity & Documents", "department": "UIDAI / Aadhaar", "required": ["Identity", "Address", "Mobile"]}, {"id": "doc-verify", "name": "Verified Identity & Document Check", "category": "Identity & Documents", "department": "UIDAI / Aadhaar", "required": ["Identity", "DOB", "Address"]}, {"id": "voter", "name": "Voter Service Request", "category": "Identity & Documents", "department": "Election Commission of India", "required": ["Identity", "Address"]}, {"id": "pan", "name": "PAN Verification / Service", "category": "Finance & Tax", "department": "Income Tax Department", "required": ["Identity", "DOB", "PAN"]}, {"id": "tax-profile", "name": "Income Tax Citizen Service", "category": "Finance & Tax", "department": "Income Tax Department", "required": ["Identity", "PAN", "Contact"]}, {"id": "uan", "name": "UAN / EPFO Service", "category": "Employment", "department": "EPFO", "required": ["Identity", "Employment", "Mobile"]}, {"id": "scholarship", "name": "National Scholarship Application", "category": "Education", "department": "Education & Scholarship Services", "required": ["Identity", "DOB", "Address", "Education", "Bank status"]}, {"id": "academic", "name": "Academic Document Verification", "category": "Education", "department": "Education & Scholarship Services", "required": ["Identity", "Education"]}, {"id": "health-id", "name": "Digital Health Service", "category": "Health", "department": "National Health Authority", "required": ["Identity", "DOB", "Mobile"]}, {"id": "health-benefit", "name": "Government Health Benefit Eligibility", "category": "Health", "department": "National Health Authority", "required": ["Identity", "Address", "Eligibility attributes"]}, {"id": "dl", "name": "Driving Licence Service", "category": "Transport", "department": "Parivahan", "required": ["Identity", "DOB", "Address"]}, {"id": "vehicle", "name": "Vehicle-related Service", "category": "Transport", "department": "Parivahan", "required": ["Identity", "Address", "Vehicle record"]}, {"id": "pension", "name": "Pension / Social Security Application", "category": "Pension", "department": "Social Welfare Services", "required": ["Identity", "DOB", "Address", "Bank status"]}, {"id": "social-benefit", "name": "Social Welfare Benefit Application", "category": "Social Welfare", "department": "Social Welfare Services", "required": ["Identity", "Address", "Eligibility attributes"]}, {"id": "farmer", "name": "Farmer Scheme Benefit Application", "category": "Agriculture", "department": "Farmer Services", "required": ["Identity", "Address", "Eligibility attributes", "Bank status"]}, {"id": "housing", "name": "Urban Housing Scheme Application", "category": "Housing", "department": "Urban Housing Services", "required": ["Identity", "Address", "Income profile"]}, {"id": "mgnrega", "name": "MGNREGA-related Service", "category": "Rural Development", "department": "Rural Development Services", "required": ["Identity", "Address", "Household profile"]}, {"id": "passport-new", "name": "Passport Service Request", "category": "Passport & Travel", "department": "Passport Seva", "required": ["Identity", "DOB", "Address", "Contact"]}, {"id": "pds", "name": "Food / PDS Service", "category": "Consumer Services", "department": "Food & Public Distribution", "required": ["Identity", "Address", "Household profile"]}, {"id": "railway", "name": "Railway Citizen Service", "category": "Other Central Services", "department": "Railway Citizen Services", "required": ["Identity", "Contact"]}]};
+let apps=[
+{id:'GNX-2026-000123',service:'National Scholarship Application',department:'Education & Scholarship Services',status:'Under Verification',submitted:'29 Aug 2026'},
+{id:'GNX-2026-000124',service:'Driving Licence Service',department:'Parivahan',status:'Submitted',submitted:'31 Aug 2026'},
+{id:'GNX-2026-000125',service:'Pension / Social Security Application',department:'Social Welfare Services',status:'Approved',submitted:'12 Aug 2026'}
+];
+let audit=[
+{date:'03 Sep 2026, 10:42',purpose:'National Scholarship Application',data:'Identity, address, education',department:'UIDAI + Education Services',status:'Allowed'},
+{date:'01 Sep 2026, 16:08',purpose:'Income Tax Citizen Service',data:'PAN verification',department:'Income Tax Department',status:'Allowed'},
+{date:'29 Aug 2026, 11:23',purpose:'Scholarship eligibility',data:'Academic record',department:'Education Services',status:'Allowed'}
+];
+let step=1, selected=null, filled={};
+function login(){document.getElementById('login').classList.add('hidden'); render('dashboard')}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>render(b.dataset.page));
+
+function navActive(page){document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.page===page))}
+function badge(s){let c=s==='Integration Pending'?'pending':s==='Action Required'?'action':'';return `<span class="badge ${c}">${s}</span>`}
+function render(page){
+ navActive(page); const m=document.getElementById('main');
+ if(page==='dashboard') m.innerHTML=`
+ <div class="hero"><div><h1>Good evening, Aarav</h1><p>Your unified citizen-service dashboard. Verified information can be reused with your consent.</p></div><button class="primary" onclick="openApply()">+ Apply for Unified Service</button></div>
+ <div class="grid"><div class="card"><div class="kpi">${DATA.departments.filter(d=>d.status==='Connected').length}</div><b>Connected demo registries</b><p>Simulated API connections for SIH demonstration.</p></div><div class="card"><div class="kpi">${DATA.services.length}</div><b>Citizen services</b><p>Searchable service catalogue across major domains.</p></div><div class="card"><div class="kpi">${apps.length}</div><b>Tracked applications</b><p>Single dashboard across departments.</p></div></div>
+ <div class="section-title"><h2>Connected Department Registries</h2><button class="secondary" onclick="render('departments')">View all</button></div>
+ <div class="grid">${DATA.departments.slice(0,6).map(d=>deptCard(d)).join('')}</div>
+ <div class="section-title"><h2>Interoperability Journey</h2></div><div class="panel flow"><span>Authenticate</span> → <span>Connect</span> → <span>Normalize</span> → <span>Auto-Fill</span> → <span>Track & Audit</span></div>`;
+ if(page==='departments') m.innerHTML=`<div class="hero"><div><h1>Connected Departments</h1><p>Prototype integration registry. Departments retain ownership; GovNexus acts as middleware.</p></div></div><div class="grid">${DATA.departments.map(d=>deptCard(d)).join('')}</div>`;
+ if(page==='services') m.innerHTML=`<div class="hero"><div><h1>Central Government Service Catalogue</h1><p>Browse the demo service catalogue and launch a unified application.</p></div><button class="primary" onclick="openApply()">Apply for Unified Service</button></div><div class="panel">${DATA.services.map(s=>`<button class="service" style="width:100%;margin:6px 0" onclick="openApply('${s.id}')"><small>${s.category}</small><h3>${s.name}</h3><p>${s.department}</p></button>`).join('')}</div>`;
+ if(page==='tracking') m.innerHTML=`<div class="hero"><div><h1>Application Tracking</h1><p>One place to track applications across service domains.</p></div></div><table class="table"><thead><tr><th>Application</th><th>Service</th><th>Department</th><th>Status</th><th>Submitted</th></tr></thead><tbody>${apps.map(a=>`<tr><td><b>${a.id}</b></td><td>${a.service}</td><td>${a.department}</td><td>${badge(a.status)}</td><td>${a.submitted}</td></tr>`).join('')}</tbody></table><div class="panel" style="margin-top:16px"><h3>Typical processing timeline</h3><div class="flow"><span>Submitted</span> → <span>Documents Verified</span> → <span>Department Processing</span> → <span>Officer Review</span> → <span>Decision</span></div></div>`;
+ if(page==='profile') m.innerHTML=`<div class="hero"><div><h1>My Verified Information</h1><p>Minimal, masked demo data with source and verification status.</p></div></div>
+ <div class="grid">${[
+ ['Name','Aarav Sharma','UIDAI / Aadhaar'],['Date of Birth','12 Aug 1998','UIDAI / Aadhaar'],['Mobile','+91 ••••• 4821','Citizen profile'],['Address','Sector 00, New Delhi — 1100XX','UIDAI / Aadhaar'],['PAN','AB•••4•••','Income Tax Department'],['Education','B.Tech — Computer Science (Demo)','Education Services'],['Employment','Software Professional (Demo)','EPFO'],['Bank status','Account ending ••1892','Demo financial verification']
+ ].map(x=>`<div class="card"><small>${x[0]}</small><h3>${x[1]}</h3><p><span class="verified">✓ Verified</span><br>Source: ${x[2]}<br>Last verified: demo sync</p></div>`).join('')}</div>`;
+ if(page==='activity') m.innerHTML=`<div class="hero"><div><h1>Consent & Activity</h1><p>Transparent audit history showing purpose, data accessed and source department.</p></div></div><table class="table"><thead><tr><th>Date/time</th><th>Purpose</th><th>Data accessed</th><th>Department</th><th>Consent</th></tr></thead><tbody>${audit.map(a=>`<tr><td>${a.date}</td><td>${a.purpose}</td><td>${a.data}</td><td>${a.department}</td><td><span class="badge">${a.status}</span></td></tr>`).join('')}</tbody></table>`;
+ if(page==='architecture') m.innerHTML=`<div class="hero"><div><h1>Technical Architecture — Judge View</h1><p>How GovNexus could interoperate with existing systems while preserving department data ownership.</p></div></div>
+ <div class="panel"><div class="flow"><span>Citizen Portal</span> → <span>UCID + SSO</span> → <span>API Gateway / Middleware</span> → <span>Consent & Authorization</span> → <span>Normalization Layer</span> → <span>Department APIs</span></div></div>
+ <div class="grid"><div class="card"><h3>Security</h3><p>OAuth 2.0 • JWT • consent-based access • encryption • role-based access • audit logs • minimal data sharing</p></div><div class="card"><h3>Integration</h3><p>REST APIs • GraphQL • legacy adapters • plug-and-play connectors</p></div><div class="card"><h3>Platform</h3><p>React + Tailwind concept • Node.js/FastAPI • PostgreSQL • Redis • Kafka/RabbitMQ</p></div></div>
+ <div class="notice" style="margin-top:16px">Architecture is a prototype representation only. No live Aadhaar, PAN, Passport, EPFO, Income Tax or other government databases are accessed.</div>`;
+}
+function deptCard(d){return `<div class="card dept"><div>${badge(d.status)}</div><h3>${d.name}</h3><div class="meta">${d.ministry}<br><b>${d.category}</b><br>Data available: ${d.data}<br>Last sync: ${d.sync}</div><div class="dept-foot"><b>${d.services} services</b><button class="secondary" onclick="openApply()">View Services</button></div></div>`}
+
+function openApply(id){selected=id?DATA.services.find(s=>s.id===id):null;step=id?2:1;filled={};document.getElementById('modal').classList.add('show');renderApply()}
+function closeApply(){document.getElementById('modal').classList.remove('show')}
+function renderSteps(){const names=['Service','Requirements','Consent','Auto-Fill','Review','Submitted'];document.getElementById('steps').innerHTML=names.map((n,i)=>`<div class="${step>=i+1?'on':''}">${step>i+1?'✓':i+1}<br>${n}</div>`).join('')}
+function renderApply(){
+ renderSteps(); const b=document.getElementById('modalBody'), f=document.getElementById('modalFoot');
+ document.getElementById('modalTitle').textContent=step===1?'Choose a Central Government service':step===6?'Application submitted successfully':selected?.name||'Apply';
+ if(step===1){
+   const cats=['All',...new Set(DATA.services.map(s=>s.category))];
+   b.innerHTML=`<div class="tools"><input id="q" placeholder="Search service or department…" oninput="filterServices()"><select id="cat" onchange="filterServices()">${cats.map(c=>`<option>${c}</option>`).join('')}</select></div><div class="servicegrid" id="servicegrid"></div>`; filterServices(); f.innerHTML='';
+ } else if(step===2){
+   b.innerHTML=`<div class="notice">GovNexus can request verified information from connected department systems only after explicit citizen consent.</div><h3>Information required</h3><div class="req">${selected.required.map(x=>`<div>✓ <b>${x}</b><br><small>Can be retrieved where available</small></div>`).join('')}</div><div class="panel" style="margin-top:16px"><b>Department data ownership</b><p>GovNexus acts as an interoperability layer. This SIH prototype uses simulated responses.</p></div>`;
+   f.innerHTML=`<button class="secondary" onclick="step=1;renderApply()">Back</button><button class="primary" onclick="step=3;renderApply()">Retrieve verified information →</button>`;
+ } else if(step===3){
+   b.innerHTML=`<div class="consentbox"><h2>GovNexus requests access to verified information</h2><p>Purpose: Apply for <b>${selected.name}</b></p><h3>Information requested</h3>${selected.required.map(x=>`<p>✓ ${x}</p>`).join('')}<h3>Demo providers</h3><p>${selected.department} + UIDAI / relevant connected authority</p><label><input type="checkbox" id="consent"> I allow access only to the listed information for this demo application.</label></div>`;
+   f.innerHTML=`<button class="secondary" onclick="step=2;renderApply()">Back</button><button class="primary" onclick="connect()">Allow & Continue →</button>`;
+ } else if(step===4){
+   const rows=Object.entries(filled).map(([k,v])=>`<div class="field"><b>✓ Verified</b><span>${k}</span><input value="${v}" readonly></div>`).join('');
+   b.innerHTML=`<div class="notice" style="background:#eaf8ef;border-color:#bfe5cc;color:#17663c"><b>Form automatically populated.</b> Source data was normalized into the GovNexus common schema.</div><div class="autofill" style="margin-top:14px">${rows}</div><div class="panel" style="margin-top:16px"><b>Judge Technical View</b><div class="flow" style="margin-top:10px"><span>Citizen</span> → <span>Middleware</span> → <span>Department APIs</span> → <span>Normalize</span> → <span>Verified Form</span></div></div>`;
+   f.innerHTML=`<button class="secondary" onclick="step=3;renderApply()">Back</button><button class="primary" onclick="step=5;renderApply()">Review application →</button>`;
+ } else if(step===5){
+   b.innerHTML=`<h2>Review Application</h2><div class="panel"><p><b>Service:</b> ${selected.name}</p><p><b>Department:</b> ${selected.department}</p>${Object.entries(filled).map(([k,v])=>`<p><b>${k}:</b> ${v} <span class="verified">✓ Verified</span></p>`).join('')}</div><div class="notice">Required records are available from connected demo sources and digitally verified in this simulation.</div>`;
+   f.innerHTML=`<button class="secondary" onclick="step=4;renderApply()">Back</button><button class="primary" onclick="submitApp()">Submit Application</button>`;
+ } else if(step===6){
+   b.innerHTML=`<div class="success"><div style="font-size:54px">✅</div><h2>Application Submitted Successfully</h2><p>Your application is now available in the single tracking dashboard.</p><div class="appId">${apps[0].id}</div><p><b>${apps[0].service}</b><br>${apps[0].department}<br>Status: Submitted</p></div>`;
+   f.innerHTML=`<button class="primary" onclick="closeApply();render('tracking')">Track application</button>`;
+ }
+}
+function filterServices(){
+ const q=(document.getElementById('q')?.value||'').toLowerCase(), cat=document.getElementById('cat')?.value||'All';
+ const list=DATA.services.filter(s=>(cat==='All'||s.category===cat)&&(`${s.name} ${s.department}`.toLowerCase().includes(q)));
+ document.getElementById('servicegrid').innerHTML=list.map(s=>`<button class="service" onclick="chooseService('${s.id}')"><small>${s.category}</small><h3>${s.name}</h3><p>${s.department}</p><b>${s.required.length} reusable data groups</b></button>`).join('');
+}
+function chooseService(id){selected=DATA.services.find(s=>s.id===id);step=2;renderApply()}
+function connect(){
+ if(!document.getElementById('consent').checked){alert('Please provide consent to continue.');return}
+ const b=document.getElementById('modalBody'),f=document.getElementById('modalFoot'); f.innerHTML='';
+ b.innerHTML=`<h2>Secure interoperability flow</h2><p id="connectText">Connecting to department…</p><div class="loader"><i id="bar"></i></div><div class="flow"><span>Connect</span> → <span>Consent</span> → <span>Retrieve</span> → <span>Normalize</span></div>`;
+ let n=0, msgs=['Connecting to department…','Consent verified','Retrieving verified information…','Information received and normalized'];
+ const timer=setInterval(()=>{n++;document.getElementById('bar').style.width=(n*25)+'%';document.getElementById('connectText').textContent=msgs[Math.min(n,3)];if(n>=4){clearInterval(timer);setTimeout(()=>{filled={'Full Name':'Aarav Sharma','Date of Birth':'12 Aug 1998','Address':'Sector 00, New Delhi — 1100XX','Mobile':'+91 ••••• 4821','Verification Source':selected.department};audit.unshift({date:'03 Sep 2026, just now',purpose:selected.name,data:selected.required.join(', '),department:selected.department,status:'Allowed'});step=4;renderApply()},350)}},450);
+}
+function submitApp(){
+ const num=String(Math.floor(126+Math.random()*800)).padStart(6,'0'); const id='GNX-2026-'+num;
+ apps.unshift({id,service:selected.name,department:selected.department,status:'Submitted',submitted:'03 Sep 2026'}); step=6; renderApply();
+}
+render('dashboard');
+</script>
+</body>
+</html>
